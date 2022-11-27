@@ -1,0 +1,15 @@
+.container {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.header {
+  align-self: center;
+}
+
+.subHeader {
+  @extend .header;
+  
+}
