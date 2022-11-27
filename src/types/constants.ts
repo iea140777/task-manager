@@ -1,13 +1,34 @@
+import { Project, Task } from "./projectTypes";
 enum Status {
-  QUEUE,
-  DEVELOPMENT,
-  DONE,
+  QUEUE = "Queue",
+  DEVELOPMENT = "Development",
+  DONE = "Done",
 }
 
 enum Priority {
-  HIGH,
-  MEDIUM,
-  LOW,
+  HIGH = "High",
+  MEDIUM = "Medium",
+  LOW = "Low",
 }
 
-export { Status, Priority };
+const EMPTY_TASK: Task = {
+  id: 0,
+  title: "New task",
+  number: "",
+  status: Status.QUEUE,
+  createdOn: new Date(),
+  completedOn: null,
+  description: "",
+  priority: Priority.LOW,
+  subtasks: [],
+  comments: [],
+};
+
+const EMPTY_PROJECT: Project = {
+  id: 0,
+  title: "New Project",
+  description: "New Project Description",
+  tasks: [],
+};
+
+export { Status, Priority, EMPTY_PROJECT, EMPTY_TASK };

@@ -1,0 +1,46 @@
+@import "../../index.scss";
+
+.container {
+  width: 100vw;
+  height: 100vh;
+  z-index: 2;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.3);
+}
+
+.modal {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 70vw;
+  height: 70vh;
+  border: 1px solid $color-green;
+  border-radius: 10px;
+  background-color: $color-white;
+}
+
+.header {
+  display: flex;
+  position: relative;
+  padding: 10px;
+  gap: 10px
+}
+
+.closeButton {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+}
+
+.footer {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+}

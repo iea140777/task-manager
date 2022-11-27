@@ -1,39 +1,17 @@
-import React, { ReactNode, useEffect, useState } from "react";
+import React, { ReactNode, useState } from "react";
 
-import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { setProjects } from "../../app/projectsSlice";
+import { useAppSelector } from "../../app/hooks";
 import { ProjectItem } from "../../components/ProjectItem/ProjectItem";
+import { EMPTY_PROJECT } from "../../types/constants";
 import { Project } from "../../types/projectTypes";
 import { Button } from "../../ui/Button/Button";
 
 import styles from "./index.module.scss";
 
-const EMPTY_PROJECT: Project = {
-  id: 0,
-  title: "New Project",
-  description: "New Project Description",
-  tasks: [],
-};
-
 function Projects(): React.ReactElement {
   const [newProjectAdded, setNewProjectAdded] = useState(false);
 
   const projectsList = useAppSelector((state) => state.projects);
-  const dispatch = useAppDispatch();
-  useEffect(() => {
-    if (projectsList.length === 0) {
-      // TODO: refactor code below to make it more readable
-      const cookieData = document.cookie.split(";").map((v) => v.split("="))[0];
-      if (cookieData.length === 0 || cookieData[0] === "") {
-        return;
-      }
-      const restoredProjectsData = JSON.parse(cookieData[1]) as Project[];
-      if (restoredProjectsData.length > 0) {
-        dispatch(setProjects(restoredProjectsData));
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   const renderProjectsList = (data: Project[]): ReactNode =>
     data.map((project) => (

@@ -1,5 +1,6 @@
 import { Priority, Status } from "./constants";
 
+type Id = number;
 interface Comment {
   createdOn: string;
   text: string;
@@ -14,11 +15,12 @@ interface SubTask {
 }
 
 interface Task {
+  id: Id;
   title: string;
-  number: number;
+  number: string;
   status: Status;
-  createdOn: string;
-  completedOn: string;
+  createdOn: Date;
+  completedOn: Date | null;
   description: string;
   priority: Priority;
   subtasks: SubTask[];
@@ -26,10 +28,10 @@ interface Task {
 }
 
 interface Project {
-  id: number;
+  id: Id;
   title: string;
   description: string;
   tasks: Task[];
 }
 
-export type { Comment, SubTask, Task, Project };
+export type { Comment, SubTask, Task, Project, Id };
