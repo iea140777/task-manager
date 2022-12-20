@@ -12,9 +12,6 @@ interface UpdateProjectProps {
 const getUpdatedProjectIndex = (id: Id, state: ProjectsState): number => {
   return state.findIndex((project) => project.id === id);
 };
-const updateCookies = (state: ProjectsState): void => {
-  document.cookie = `projects=${JSON.stringify(state)}`;
-};
 
 const initialState: ProjectsState = [] as ProjectsState;
 
@@ -36,10 +33,8 @@ const projectsSlice = createSlice({
         state.push(newProject);
       } else {
         const updatedProjectIndex = getUpdatedProjectIndex(projectId, state);
-
         state[updatedProjectIndex] = action.payload;
       }
-      updateCookies(state);
     },
     updateTask: (state, action: PayloadAction<UpdateProjectProps>) => {
       const { projectId, task } = action.payload;
@@ -57,13 +52,22 @@ const projectsSlice = createSlice({
         );
         state[updatedProjectIndex].tasks[updatedTaskIndex] = task;
       }
-      updateCookies(state);
+    },
+    deleteTask: (state, action: PayloadAction<UpdateProjectProps>) => {
+      const { projectId, task } = action.payload;
+      const updatedProjectIndex = getUpdatedProjectIndex(projectId, state);
+
+      const deletedTaskIndex = state[updatedProjectIndex].tasks.findIndex(
+        (item) => item.id === task.id
+      );
+      state[updatedProjectIndex].tasks.splice(deletedTaskIndex, 1);
     },
   },
 });
 
-const { updateProjects, setProjects, updateTask } = projectsSlice.actions;
+const { updateProjects, setProjects, updateTask, deleteTask } =
+  projectsSlice.actions;
 
 export default projectsSlice.reducer;
 
-export { projectsSlice, updateProjects, setProjects, updateTask };
+export { projectsSlice, updateProjects, setProjects, updateTask, deleteTask };

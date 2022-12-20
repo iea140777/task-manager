@@ -1,7 +1,19 @@
-import React, { useEffect, useState } from "react";
+import React, { ReactNode, useRef, useState } from "react";
 
-import { Task } from "../../types/projectTypes";
+import classNames from "classnames";
+import { format } from "date-fns";
+
+import {
+  EMPTY_COMMENT,
+  EMPTY_SUBTASK,
+  Priority,
+  Status,
+} from "../../types/constants";
+import { CommentType, SubTask, Task } from "../../types/projectTypes";
 import { Button } from "../../ui/Button/Button";
+import { Comment } from "../Comment/Comment";
+import { Dropdown } from "../Dropdown/Dropdown";
+import { Subtask } from "../Subtask/Subtask";
 import { TextEditor } from "../TextEditor/TextEditor";
 
 import styles from "./index.module.scss";
@@ -9,29 +21,25 @@ import styles from "./index.module.scss";
 interface TaskCardProps {
   currentTask: Task;
   isTaskModalOpen: boolean;
-  isNewTask: boolean;
+
   handleClosemodal: () => void;
-  updateTaskHandler: () => void;
+  updateTask: (task: Task) => void;
+  deleteTaskHandler: () => void;
 }
 
 function TaskModal({
   currentTask,
-  isTaskModalOpen,
-  isNewTask,
-  handleClosemodal,
-  updateTaskHandler,
-}: TaskCardProps): React.ReactElement | null {
-  const [isEditMode, setIsEditMode] = useState(false);
-  const [task, setTask] = useState<Task>(currentTask);
-  useEffect(() => {
-    if (isNewTask) {
-      setIsEditMode(true);
-    }
-  }, [isNewTask]);
 
-  if (!isTaskModalOpen || task === undefined) {
-    return null;
-  }
+  handleClosemodal,
+  updateTask,
+  deleteTaskHandler,
+}: TaskCardProps): React.ReactElement | null {
+  const [isEditMode, setIsEditMode] = useState(currentTask.id === 0);
+  const [task, setTask] = useState<Task>(currentTask);
+
+  const titleRef = useRef<any>(null);
+  const descriptionRef = useRef<any>(null);
+  const numberRef = useRef<any>(null);
 
   const {
     title,
@@ -45,39 +53,227 @@ function TaskModal({
     comments,
   } = task;
 
-  const editChangesHandler = (): void => {
+  const closeButtonHandler = (): void => {
+    if (task.id !== 0) {
+      updateTask(task);
+    }
+    setIsEditMode(false);
+    handleClosemodal();
+  };
+
+  const editTaskHandler = (): void => {
     setIsEditMode(true);
   };
+
   const cancelChangesHandler = (): void => {
     setIsEditMode(false);
     setTask(currentTask);
   };
+
+  const changeStatusHandler = (newStatus: string): void => {
+    const updatedTask = {
+      ...task,
+      status: newStatus as Status,
+    };
+    setTask(updatedTask);
+    updateTask(updatedTask);
+  };
+
+  const changePriorityHandler = (newPriority: string): void => {
+    const updatedTask = {
+      ...task,
+      priority: newPriority as Priority,
+    };
+    setTask(updatedTask);
+    updateTask(updatedTask);
+  };
+
   const saveChangesHandler = (): void => {
+    const newTask = {
+      ...task,
+      number: numberRef.current.getContent(),
+      title: titleRef.current.getContent(),
+      description: descriptionRef.current.getContent(),
+    };
+    setTask(newTask);
     setIsEditMode(false);
-    updateTaskHandler();
+    handleClosemodal();
+    updateTask(newTask);
+  };
+  const clickEditableHandler = (): void => {
+    setIsEditMode(true);
+  };
+
+  const addSubTaskHandler = (): void => {
+    setTask((state) => {
+      return {
+        ...state,
+        subtasks: [...subtasks, EMPTY_SUBTASK],
+      };
+    });
+    setIsEditMode(true);
+  };
+
+  const updateSubtaskHandler = (subtask: SubTask): void => {
+    let editedSubtask = subtask;
+    if (editedSubtask.id === 0) {
+      const subtaskId = task.subtasks.length + 1;
+      editedSubtask = {
+        ...editedSubtask,
+        id: subtaskId,
+      };
+    }
+    setTask((state) => {
+      const updatedSubtasks = state.subtasks.map((item) =>
+        item.id === subtask.id ? editedSubtask : item
+      );
+
+      return {
+        ...state,
+        subtasks: updatedSubtasks,
+      };
+    });
+  };
+
+  const renderSubtasks = (): ReactNode =>
+    subtasks.map((subtask) => (
+      <Subtask
+        key={subtask.id}
+        subtask={subtask}
+        onChangeValue={updateSubtaskHandler}
+      />
+    ));
+
+  const saveCommentHandler = (comment: CommentType): void => {
+    let editedComment = comment;
+
+    if (comment.id === 0) {
+      const commentsLength = task.comments.length;
+      editedComment = {
+        ...comment,
+        createdOn: format(new Date(), "MM/dd/yyyy HH.mm"),
+        id: commentsLength + 1,
+      };
+    }
+    const commentIndex = task.comments.findIndex(
+      (item) => item.id === comment.id
+    );
+    const updatedComments: CommentType[] = task.comments.map((item, index) =>
+      index === commentIndex ? editedComment : item
+    );
+    setTask((prevState) => ({
+      ...prevState,
+      comments: updatedComments,
+    }));
+    setIsEditMode(true);
+  };
+
+  const addCommentHandler = (): void => {
+    setTask((prevTask) => ({
+      ...prevTask,
+      comments: [...task.comments, EMPTY_COMMENT],
+    }));
+  };
+
+  const renderComments = (commentsList: CommentType[]): ReactNode => {
+    return commentsList.map((comment) => (
+      <Comment
+        comment={comment}
+        key={comment.id}
+        children={renderComments(comment.replies)}
+        saveCommentHandler={saveCommentHandler}
+      />
+    ));
   };
 
   return (
     <div className={styles.container}>
       <div className={styles.modal}>
         <div className={styles.header}>
-          <span>{number}</span>
-          <span>{title}</span>
-
+          <div onClick={clickEditableHandler} className="editable">
+            {isEditMode ? (
+              <TextEditor
+                initialValue={title}
+                editorRef={titleRef}
+                toolbar=""
+              />
+            ) : (
+              <h3 dangerouslySetInnerHTML={{ __html: title }} />
+            )}
+          </div>
           <Button
             className={styles.closeButton}
-            onClickHandler={() => handleClosemodal()}
-            label="x"
+            onClickHandler={closeButtonHandler}
+            label="Close"
           />
         </div>
         <div className={styles.body}>
-          <span>{status}</span>
-          <span>{priority}</span>
-          <p>{description}</p>
-
-          <p>{subtasks.length} subtasks</p>
-          <p>{comments.length} comments</p>
+          <div onClick={clickEditableHandler} className="editable">
+            Task number:
+            {isEditMode ? (
+              <TextEditor
+                initialValue={number}
+                editorRef={numberRef}
+                toolbar=""
+              />
+            ) : (
+              <span dangerouslySetInnerHTML={{ __html: number }} />
+            )}
+          </div>
+          <div className={styles.dropdownContainer}>
+            <span>Task status:</span>
+            <Dropdown
+              values={Object.values(Status)}
+              initialValue={status}
+              onChangeValue={changeStatusHandler}
+            />
+          </div>
+          <div className={styles.dropdownContainer}>
+            <span>Task priority:</span>
+            <Dropdown
+              values={Object.values(Priority)}
+              initialValue={priority}
+              onChangeValue={changePriorityHandler}
+            />
+          </div>
+          <div
+            className={classNames(styles.description, "editable")}
+            onClick={clickEditableHandler}
+          >
+            <>
+              Task description:
+              {isEditMode ? (
+                <TextEditor
+                  initialValue={description}
+                  editorRef={descriptionRef}
+                  toolbar="undo redo | bold italic forecolor |  alignleft aligncenter | bullist numlist outdent inden | removeformat"
+                />
+              ) : (
+                <span dangerouslySetInnerHTML={{ __html: description }} />
+              )}
+            </>
+          </div>
+          <div className={styles.subtasks}>
+            Subtasks:{" "}
+            {subtasks.length === 0 ? (
+              "No subtasks"
+            ) : (
+              <div className={styles.subtasksList}>{renderSubtasks()}</div>
+            )}
+            <Button
+              onClickHandler={addSubTaskHandler}
+              label="Add Subtask"
+            ></Button>
+          </div>
+          <div className={styles.comments}>
+            Comments: <div>{renderComments(comments)}</div>
+            <Button
+              onClickHandler={addCommentHandler}
+              label="Add comment"
+            ></Button>
+          </div>
         </div>
+        <div className={styles.spacer}></div>
         <div className={styles.footer}>
           {isEditMode ? (
             <>
@@ -88,7 +284,10 @@ function TaskModal({
               <Button onClickHandler={cancelChangesHandler} label="Cancel" />
             </>
           ) : (
-            <Button onClickHandler={editChangesHandler} label="Edit Task" />
+            <>
+              <Button onClickHandler={editTaskHandler} label="Edit Task" />
+              <Button onClickHandler={deleteTaskHandler} label="Delete Task" />
+            </>
           )}
         </div>
       </div>

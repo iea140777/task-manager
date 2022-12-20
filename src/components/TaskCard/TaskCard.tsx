@@ -16,7 +16,6 @@ function TaskCard({ task, onCardClick }: TaskCardProps): React.ReactElement {
     status,
     createdOn,
     completedOn,
-    description,
     priority,
     subtasks,
     comments,
@@ -28,13 +27,19 @@ function TaskCard({ task, onCardClick }: TaskCardProps): React.ReactElement {
       role="button"
       onClick={() => onCardClick(task)}
     >
-      <p>{title}</p>
-      <p>{number}</p>
-      <p>{status}</p>
-      <p>{priority}</p>
-      {/* <p>{createdOn}</p> */}
-      <p>{subtasks.length} subtasks</p>
-      <p>{comments.length} comments</p>
+      <div className={styles.header}>
+        <span dangerouslySetInnerHTML={{ __html: title }} />
+        <span dangerouslySetInnerHTML={{ __html: `# ${number}` }} />
+      </div>
+      <div className={styles.body}>
+        <span>Priority: {priority}</span>
+        <span>Status: {status}</span>
+        <span>Created on: {createdOn != null ? createdOn : "-"}</span>
+      </div>
+      <div className={styles.footer}>
+        <span>{subtasks.length} subtasks</span>
+        <span>{comments.length} comments</span>
+      </div>
     </div>
   );
 }

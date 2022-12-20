@@ -23,7 +23,27 @@ h1, h2, h3, p {
   padding: 0;
 }
 
+.textEditor, .textEditor:focus {
+  outline: none !important
+}
+#editor, #editor:focus {
+  outline: none !important
+}
+
+* {
+  box-sizing: border-box;
+}
+
 code { 
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+// common styles for TinyMCE
+.editable *, .editable *:focus {
+  outline: none !important;
+}
+
+.editable > div, .editable > div:focus {
+  background-color: rgb($color-green, 0.1);
 }

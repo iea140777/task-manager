@@ -21,10 +21,10 @@ function ProjectItem({
   editMode = false,
 }: ProjectItemProps): React.ReactElement {
   const [isEditMode, setEditmode] = useState<boolean>(editMode);
-  const [projectTitle, setProjectTitle] = useState<string>(project.title);
 
   // TODO: fix typing
   const descriptionRef = useRef<any>(null);
+  const titleRef = useRef<any>(null);
 
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -36,32 +36,40 @@ function ProjectItem({
   const saveButtonHandler = (): void => {
     const updatedProject: Project = {
       ...project,
-      title: projectTitle,
+      title:
+        titleRef.current !== null
+          ? titleRef.current.getContent()
+          : project.title,
       description:
         descriptionRef.current !== null
           ? descriptionRef.current.getContent()
           : project.description,
     };
     dispatch(updateProjects(updatedProject));
+
     setNewProjectAdded(false);
     setEditmode(false);
   };
   const cancelButtonHandler = (): void => {
-    setProjectTitle(project.title);
     setEditmode(false);
   };
 
   const renderEditMode = (): React.ReactNode => (
     <>
-      <input
-        type="text"
-        value={projectTitle}
-        onChange={(e) => setProjectTitle(e.target.value)}
-      />
-      <TextEditor
-        initialValue={project.description}
-        editorRef={descriptionRef}
-      />
+      <div className="editable">
+        <TextEditor
+          initialValue={project.title}
+          editorRef={titleRef}
+          toolbar=""
+        />
+      </div>
+      <div className="editable">
+        <TextEditor
+          initialValue={project.description}
+          editorRef={descriptionRef}
+          toolbar="undo redo | bold italic forecolor |  alignleft aligncenter | bullist numlist outdent inden | removeformat"
+        />
+      </div>
     </>
   );
 
@@ -71,7 +79,7 @@ function ProjectItem({
         renderEditMode()
       ) : (
         <>
-          <h3>{project.title}</h3>
+          <h3 dangerouslySetInnerHTML={{ __html: project.title }}></h3>
           <div dangerouslySetInnerHTML={{ __html: project.description }}></div>
         </>
       )}

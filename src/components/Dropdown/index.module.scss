@@ -1,0 +1,38 @@
+@import "../../index.scss";
+
+$height: 20px;
+$padding: 10px;
+
+.value {
+  height: $height;
+  position: relative;
+}
+
+.dropdown {
+  position: absolute;
+  top: $height + 5px;
+  left: -$padding;
+  z-index: 2;
+  padding: $padding;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border: 1px solid rgb($color-green, 0.2);
+  background-color: $color-white;
+
+  .value {
+    &:hover {
+      background-color: rgb($color-green, 0.2);
+    }
+  }
+}
+
+.value {
+  &:hover {
+    cursor: pointer;   
+  }
+}
+
+.hidden {
+  display: none;
+}

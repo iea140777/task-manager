@@ -6,6 +6,9 @@ interface TextEditorProps {
   editorRef: React.MutableRefObject<any>;
   height?: number;
   plugins?: string[];
+  inline?: boolean;
+  toolbar?: string;
+  editorHandler?: () => void;
 }
 
 const DEFAULT_HEIGHT = 200;
@@ -16,7 +19,6 @@ const DEFAULT_PLUGINS = [
   "link",
   "image",
   "charmap",
-  "preview",
   "anchor",
   "searchreplace",
   "visualblocks",
@@ -25,33 +27,39 @@ const DEFAULT_PLUGINS = [
   "insertdatetime",
   "media",
   "table",
-  "code",
+  "preview",
   "help",
   "wordcount",
 ];
+
+const DEFAULT_TOOLBAR =
+  "undo redo | blocks | " +
+  "bold italic forecolor | alignleft aligncenter " +
+  "alignright alignjustify | bullist numlist outdent indent | " +
+  "removeformat ";
 
 function TextEditor({
   initialValue,
   editorRef,
   height = DEFAULT_HEIGHT,
   plugins = DEFAULT_PLUGINS,
+  toolbar = DEFAULT_TOOLBAR,
+  inline = true,
+  editorHandler = () => {},
 }: TextEditorProps): React.ReactElement {
   return (
     <Editor
-      apiKey="your-api-key"
+      apiKey="nsnx2aavjr1gsq75c73mxjzdx6vu5spniqfc9gb0f9474s6e"
+      inline={inline}
       onInit={(evt, editor) => (editorRef.current = editor)}
+      onEditorChange={editorHandler}
       initialValue={initialValue}
       init={{
         height,
         menubar: false,
         plugins,
-        toolbar:
-          "undo redo | blocks | " +
-          "bold italic forecolor | alignleft aligncenter " +
-          "alignright alignjustify | bullist numlist outdent indent | " +
-          "removeformat | help",
-        content_style:
-          "body { font-family:Helvetica,Arial,sans-serif; font-size:14px }",
+        toolbar,
+        body_class: "editor",
       }}
     />
   );

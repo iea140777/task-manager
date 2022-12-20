@@ -1,0 +1,10 @@
+@import "../../index.scss";
+
+.container {
+  padding: 10px;
+  margin-left: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border-top: 1px solid rgb($color-green, 0.2);
+}

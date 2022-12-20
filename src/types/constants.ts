@@ -1,4 +1,7 @@
-import { Project, Task } from "./projectTypes";
+import { format } from "date-fns";
+
+import { CommentType, Project, SubTask, Task } from "./projectTypes";
+
 enum Status {
   QUEUE = "Queue",
   DEVELOPMENT = "Development",
@@ -11,13 +14,22 @@ enum Priority {
   LOW = "Low",
 }
 
+const EMPTY_SUBTASK: SubTask = {
+  id: 0,
+  title: "New Subtask",
+  number: "",
+  status: Status.QUEUE,
+  createdOn: format(new Date(), "MM/dd/yyyy"),
+  completedOn: "",
+};
+
 const EMPTY_TASK: Task = {
   id: 0,
   title: "New task",
   number: "",
   status: Status.QUEUE,
-  createdOn: new Date(),
-  completedOn: null,
+  createdOn: format(new Date(), "MM/dd/yyyy"),
+  completedOn: "",
   description: "",
   priority: Priority.LOW,
   subtasks: [],
@@ -31,4 +43,18 @@ const EMPTY_PROJECT: Project = {
   tasks: [],
 };
 
-export { Status, Priority, EMPTY_PROJECT, EMPTY_TASK };
+const EMPTY_COMMENT: CommentType = {
+  id: 0,
+  createdOn: "",
+  text: "",
+  replies: [],
+};
+
+export {
+  Status,
+  Priority,
+  EMPTY_PROJECT,
+  EMPTY_TASK,
+  EMPTY_SUBTASK,
+  EMPTY_COMMENT,
+};

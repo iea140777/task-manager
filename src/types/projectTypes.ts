@@ -1,17 +1,11 @@
 import { Priority, Status } from "./constants";
 
 type Id = number;
-interface Comment {
+interface CommentType {
+  id: number;
   createdOn: string;
   text: string;
-  replies: Comment[];
-}
-
-interface SubTask {
-  title: string;
-  status: Status;
-  description: string;
-  comments: Comment[];
+  replies: CommentType[];
 }
 
 interface Task {
@@ -19,13 +13,15 @@ interface Task {
   title: string;
   number: string;
   status: Status;
-  createdOn: Date;
-  completedOn: Date | null;
+  createdOn: string;
+  completedOn: string;
   description: string;
   priority: Priority;
   subtasks: SubTask[];
-  comments: Comment[];
+  comments: CommentType[];
 }
+
+type SubTask = Omit<Task, "priority" | "subtasks" | "comments" | "description">;
 
 interface Project {
   id: Id;
@@ -34,4 +30,4 @@ interface Project {
   tasks: Task[];
 }
 
-export type { Comment, SubTask, Task, Project, Id };
+export type { CommentType, SubTask, Task, Project, Id };

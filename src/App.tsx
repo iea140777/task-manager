@@ -26,6 +26,12 @@ function App(): React.ReactElement {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    document.cookie = `projects=${JSON.stringify(
+      projectsList
+    )};path="/","/project"`;
+  }, [projectsList]);
   return (
     <div className={styles.app}>
       <Routes>

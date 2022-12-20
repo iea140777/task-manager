@@ -1,8 +1,8 @@
-import React, { ReactNode, useState } from "react";
+import React, { ReactNode, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { updateTask } from "../../app/projectsSlice";
+import { deleteTask, updateTask } from "../../app/projectsSlice";
 import { TaskCard } from "../../components/TaskCard/TaskCard";
 import { TaskModal } from "../../components/TaskModal/TaskModal";
 import { EMPTY_TASK, Status } from "../../types/constants";
@@ -12,38 +12,54 @@ import { Button } from "../../ui/Button/Button";
 import styles from "./index.module.scss";
 
 function Project(): React.ReactElement | null {
-  // TODO: add typing
   const { id } = useParams<{ id: string }>();
-  console.log(useParams());
+
   const project = useAppSelector((state) =>
     state.projects.find((item) => item.id === Number(id))
   );
   const dispatch = useAppDispatch();
 
-  const [currentTask, setCurrentTask] = useState<Task | undefined>(undefined);
-  const [isNewTask, setIsNewTask] = useState<boolean>(false);
+  const [currentTask, setCurrentTask] = useState<Task | undefined>();
+
   const [isTaskModalOpen, setTaskModalOpen] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (currentTask === undefined) {
+      setTaskModalOpen(false);
+    } else {
+      setTaskModalOpen(true);
+    }
+  }, [currentTask, setTaskModalOpen]);
 
   if (project === undefined) {
     return null;
   }
+  const onCardClick = (task: Task): void => {
+    setCurrentTask(task);
+  };
+
   const { id: projectId, title, description, tasks } = project;
+
+  const updateTaskHandler = (task: Task): void => {
+    if (currentTask !== undefined) {
+      setCurrentTask(task);
+      dispatch(updateTask({ projectId, task }));
+    }
+  };
 
   const addTaskHandler = (): void => {
     setCurrentTask(EMPTY_TASK);
-    setIsNewTask(true);
-    setTaskModalOpen(true);
   };
 
-  const updateTaskHandler = (): void => {
+  const deleteTaskHandler = (): void => {
     if (currentTask !== undefined) {
-      dispatch(updateTask({ projectId, task: currentTask }));
+      dispatch(deleteTask({ projectId, task: currentTask }));
     }
-    setIsNewTask(false);
+    setCurrentTask(undefined);
   };
-  const onCardClick = (task: Task): void => {
-    setCurrentTask(task);
-    setTaskModalOpen(true);
+
+  const handleCloseModal = (): void => {
+    setCurrentTask(undefined);
   };
 
   const renderTasksOfStatus = (status: Status): ReactNode => {
@@ -55,37 +71,40 @@ function Project(): React.ReactElement | null {
       <TaskCard task={task} key={task.id} onCardClick={onCardClick} />
     ));
   };
+
   return (
-    <div>
-      <h2>{title}</h2>
-      <div dangerouslySetInnerHTML={{ __html: description }}></div>
-      <Button onClickHandler={addTaskHandler} label="Add new task"></Button>
-      <div className={styles.tasksContainer}>
-        <div className={styles.tasksColumn}>
-          <h3>{Status.QUEUE}</h3>
-          {renderTasksOfStatus(Status.QUEUE)}
+    <>
+      <div className={styles.container}>
+        <div className={styles.header}>
+          <h2 dangerouslySetInnerHTML={{ __html: title }}></h2>
+          <div dangerouslySetInnerHTML={{ __html: description }}></div>
+          <Button onClickHandler={addTaskHandler} label="Add new task"></Button>
         </div>
-        <div className={styles.divider}></div>
-        <div className={styles.tasksColumn}>
-          <h3>{Status.DEVELOPMENT}</h3>
-          {renderTasksOfStatus(Status.DEVELOPMENT)}
-        </div>
-        <div className={styles.divider}></div>
-        <div className={styles.tasksColumn}>
-          <h3>{Status.DONE}</h3>
-          {renderTasksOfStatus(Status.DONE)}
+        <div className={styles.tasksContainer}>
+          <div className={styles.tasksColumn}>
+            <h3>{Status.QUEUE}</h3>
+            {renderTasksOfStatus(Status.QUEUE)}
+          </div>
+          <div className={styles.tasksColumn}>
+            <h3>{Status.DEVELOPMENT}</h3>
+            {renderTasksOfStatus(Status.DEVELOPMENT)}
+          </div>
+          <div className={styles.tasksColumn}>
+            <h3>{Status.DONE}</h3>
+            {renderTasksOfStatus(Status.DONE)}
+          </div>
         </div>
       </div>
       {currentTask !== undefined && (
         <TaskModal
           currentTask={currentTask}
           isTaskModalOpen={isTaskModalOpen}
-          handleClosemodal={() => setTaskModalOpen(false)}
-          isNewTask={isNewTask}
-          updateTaskHandler={updateTaskHandler}
+          handleClosemodal={handleCloseModal}
+          updateTask={updateTaskHandler}
+          deleteTaskHandler={deleteTaskHandler}
         />
       )}
-    </div>
+    </>
   );
 }
 
