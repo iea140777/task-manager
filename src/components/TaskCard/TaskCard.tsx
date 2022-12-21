@@ -35,6 +35,7 @@ function TaskCard({ task, onCardClick }: TaskCardProps): React.ReactElement {
         <span>Priority: {priority}</span>
         <span>Status: {status}</span>
         <span>Created on: {createdOn != null ? createdOn : "-"}</span>
+        {completedOn !== "" && <span>Completed on: {completedOn}</span>}
       </div>
       <div className={styles.footer}>
         <span>{subtasks.length} subtasks</span>

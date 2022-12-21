@@ -1,4 +1,4 @@
-import React, { ReactNode, useRef, useState } from "react";
+import React, { ReactNode, useEffect, useRef, useState } from "react";
 
 import classNames from "classnames";
 import { format } from "date-fns";
@@ -52,6 +52,25 @@ function TaskModal({
     subtasks,
     comments,
   } = task;
+
+  useEffect(() => {
+    if (status === Status.DONE && completedOn === "") {
+      const updatedTask = {
+        ...task,
+        completedOn: format(new Date(), "MM/dd/yyyy"),
+      };
+      setTask(updatedTask);
+      updateTask(updatedTask);
+    } else if (status !== Status.DONE && completedOn !== "") {
+      const updatedTask = {
+        ...task,
+        completedOn: "",
+      };
+      setTask(updatedTask);
+      updateTask(updatedTask);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [status, completedOn, task]);
 
   const closeButtonHandler = (): void => {
     if (task.id !== 0) {
@@ -236,6 +255,16 @@ function TaskModal({
               onChangeValue={changePriorityHandler}
             />
           </div>
+          <div className={styles.dropdownContainer}>
+            <span>Created on:</span>
+            <span>{createdOn}</span>
+          </div>
+          {completedOn !== "" && (
+            <div className={styles.dropdownContainer}>
+              <span>Completed on:</span>
+              <span>{completedOn}</span>
+            </div>
+          )}
           <div
             className={classNames(styles.description, "editable")}
             onClick={clickEditableHandler}
