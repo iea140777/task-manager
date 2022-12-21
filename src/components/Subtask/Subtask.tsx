@@ -34,7 +34,6 @@ function Subtask({
     const editedSubtask = {
       ...subtask,
       number: numberRef.current.getContent(),
-      createdOn: format(new Date(), "MM/dd/yyyy HH.mm"),
       title: titleRef.current.getContent(),
     };
     onChangeValue(editedSubtask);

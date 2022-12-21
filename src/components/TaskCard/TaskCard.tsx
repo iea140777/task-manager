@@ -28,14 +28,36 @@ function TaskCard({ task, onCardClick }: TaskCardProps): React.ReactElement {
       onClick={() => onCardClick(task)}
     >
       <div className={styles.header}>
-        <span dangerouslySetInnerHTML={{ __html: title }} />
-        <span dangerouslySetInnerHTML={{ __html: `# ${number}` }} />
+        <span
+          className={styles.number}
+          dangerouslySetInnerHTML={{ __html: `${number}` }}
+        />
+        <span
+          className={styles.title}
+          dangerouslySetInnerHTML={{ __html: title }}
+        />
       </div>
       <div className={styles.body}>
-        <span>Priority: {priority}</span>
-        <span>Status: {status}</span>
-        <span>Created on: {createdOn != null ? createdOn : "-"}</span>
-        {completedOn !== "" && <span>Completed on: {completedOn}</span>}
+        <div className={styles.bodyItem}>
+          <span className={styles.label}>Priority:</span>
+          <span className={styles.data}>{priority}</span>
+        </div>
+        <div className={styles.bodyItem}>
+          <span className={styles.label}>Status:</span>
+          <span className={styles.data}>{status}</span>
+        </div>
+        <div className={styles.bodyItem}>
+          <span className={styles.label}>Created on:</span>
+          <span className={styles.data}>
+            {createdOn != null ? createdOn : "-"}
+          </span>
+        </div>
+        {completedOn !== "" && (
+          <div className={styles.bodyItem}>
+            <span className={styles.label}>Completed on:</span>
+            <span className={styles.data}>{completedOn}</span>
+          </div>
+        )}
       </div>
       <div className={styles.footer}>
         <span>{subtasks.length} subtasks</span>
