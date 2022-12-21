@@ -1,4 +1,4 @@
-import React, { ReactNode, useEffect, useState } from "react";
+import React, { ReactNode, useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
@@ -12,16 +12,19 @@ import { Button } from "../../ui/Button/Button";
 import styles from "./index.module.scss";
 
 function Project(): React.ReactElement | null {
-  const { id } = useParams<{ id: string }>();
+  const { id: projectIdParams } = useParams<{ id: string }>();
 
   const project = useAppSelector((state) =>
-    state.projects.find((item) => item.id === Number(id))
+    state.projects.find((item) => item.id === Number(projectIdParams))
   );
   const dispatch = useAppDispatch();
 
   const [currentTask, setCurrentTask] = useState<Task | undefined>();
 
   const [isTaskModalOpen, setTaskModalOpen] = useState<boolean>(false);
+
+  const dragItem = useRef<any>();
+  const dragOverItem = useRef<any>();
 
   useEffect(() => {
     if (currentTask === undefined) {
@@ -34,11 +37,44 @@ function Project(): React.ReactElement | null {
   if (project === undefined) {
     return null;
   }
+  const { id: projectId, title, description, tasks } = project;
+
+  // Drag and Drop functionality
+  // TODO: change typing for id to make it related to Task interface
+  const dragStart = (e: React.DragEvent, id: number): void => {
+    e.dataTransfer.effectAllowed = "move";
+    dragItem.current = id;
+  };
+  const dragEnter = (
+    e: React.MouseEvent<HTMLElement>,
+    status: Status
+  ): void => {
+    e.preventDefault();
+    dragOverItem.current = status;
+  };
+  const allowDrop = (e: React.DragEvent): void => {
+    e.stopPropagation();
+    e.preventDefault();
+  };
+  const drop = (e: React.DragEvent): void => {
+    e.preventDefault();
+    const taskToMove = tasks.find((task) => task.id === dragItem.current);
+    if (
+      taskToMove !== undefined &&
+      dragOverItem.current !== undefined &&
+      dragOverItem.current !== taskToMove.status
+    ) {
+      const updatedTask: Task = {
+        ...taskToMove,
+        status: dragOverItem.current,
+      };
+      dispatch(updateTask({ projectId, task: updatedTask }));
+    }
+  };
+
   const onCardClick = (task: Task): void => {
     setCurrentTask(task);
   };
-
-  const { id: projectId, title, description, tasks } = project;
 
   const updateTaskHandler = (task: Task): void => {
     if (currentTask !== undefined) {
@@ -68,7 +104,14 @@ function Project(): React.ReactElement | null {
       return null;
     }
     return tasksOfStatus.map((task) => (
-      <TaskCard task={task} key={task.id} onCardClick={onCardClick} />
+      <div
+        draggable
+        onDragStart={(e) => dragStart(e, task.id)}
+        key={task.id}
+        className={styles.cardContainer}
+      >
+        <TaskCard task={task} onCardClick={onCardClick} />
+      </div>
     ));
   };
 
@@ -81,15 +124,30 @@ function Project(): React.ReactElement | null {
           <Button onClickHandler={addTaskHandler} label="Add new task"></Button>
         </div>
         <div className={styles.tasksContainer}>
-          <div className={styles.tasksColumn}>
+          <div
+            className={styles.tasksColumn}
+            onDragEnter={(e) => dragEnter(e, Status.QUEUE)}
+            onDragOver={allowDrop}
+            onDrop={drop}
+          >
             <h3>{Status.QUEUE}</h3>
             {renderTasksOfStatus(Status.QUEUE)}
           </div>
-          <div className={styles.tasksColumn}>
+          <div
+            className={styles.tasksColumn}
+            onDragEnter={(e) => dragEnter(e, Status.DEVELOPMENT)}
+            onDragOver={allowDrop}
+            onDrop={drop}
+          >
             <h3>{Status.DEVELOPMENT}</h3>
             {renderTasksOfStatus(Status.DEVELOPMENT)}
           </div>
-          <div className={styles.tasksColumn}>
+          <div
+            className={styles.tasksColumn}
+            onDragEnter={(e) => dragEnter(e, Status.DONE)}
+            onDragOver={allowDrop}
+            onDrop={drop}
+          >
             <h3>{Status.DONE}</h3>
             {renderTasksOfStatus(Status.DONE)}
           </div>
