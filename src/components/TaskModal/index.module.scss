@@ -52,6 +52,11 @@
   overflow: auto;
 }
 
+.label {
+  color: $color-green;
+  font-style: italic;
+}
+
 .description, .subtasks, .comments {
   border-top: 1px solid rgb($color-green, 0.6);
   padding-top: 10px;

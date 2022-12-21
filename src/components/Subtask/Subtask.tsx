@@ -19,21 +19,21 @@ function Subtask({
   subtask,
   onChangeValue,
 }: SubtaskCardProps): React.ReactElement {
-  const { title, number, status, createdOn, completedOn } = subtask;
+  const { title, number, status, createdOn, completedOn, id } = subtask;
   const [isEditMode, setIsEditMode] = useState(false);
   const titleRef = useRef<any>(null);
-  const numberRef = useRef<any>(null);
+  // const numberRef = useRef<any>(null);
 
   useEffect(() => {
-    if (subtask.id === 0) {
+    if (id === 0) {
       setIsEditMode(true);
     }
-  }, [subtask.id]);
+  }, [id]);
 
   const saveSubtaskHandler = (): void => {
     const editedSubtask = {
       ...subtask,
-      number: numberRef.current.getContent(),
+      // number: numberRef.current.getContent(),
       title: titleRef.current.getContent(),
     };
     onChangeValue(editedSubtask);
@@ -42,7 +42,7 @@ function Subtask({
 
   return (
     <div className={styles.container}>
-      <div onClick={() => setIsEditMode(true)}>
+      {/* <div onClick={() => setIsEditMode(true)}>
         {isEditMode ? (
           <div className="editable">
             <TextEditor
@@ -54,16 +54,7 @@ function Subtask({
         ) : (
           <span dangerouslySetInnerHTML={{ __html: number }}></span>
         )}
-      </div>
-
-      <Dropdown
-        initialValue={status}
-        values={Object.values(Status)}
-        // onChangeValue={(newStatus: string) =>
-        //   onChangeValue({ ...subtask, status: newStatus as Status })
-        // }
-        onChangeValue={() => {}}
-      />
+      </div> */}
       <div onClick={() => setIsEditMode(true)}>
         {isEditMode ? (
           <div className="editable">
@@ -73,8 +64,25 @@ function Subtask({
           <span dangerouslySetInnerHTML={{ __html: title }}></span>
         )}
       </div>
-      <span>{createdOn}</span>
-      <span>{completedOn}</span>
+      <div className={styles.itemContainer}>
+        <span className={styles.label}>Status:</span>
+        <Dropdown
+          initialValue={status}
+          values={Object.values(Status)}
+          // onChangeValue={(newStatus: string) =>
+          //   onChangeValue({ ...subtask, status: newStatus as Status })
+          // }
+          onChangeValue={() => {}}
+        />
+      </div>
+      <div className={styles.itemContainer}>
+        <span className={styles.label}>Created on:</span>
+        <span>{createdOn}</span>
+      </div>
+      <div className={styles.itemContainer}>
+        <span className={styles.label}>Completed on:</span>
+        <span>{completedOn}</span>
+      </div>
       {isEditMode && (
         <Button label="Save" onClickHandler={saveSubtaskHandler} />
       )}

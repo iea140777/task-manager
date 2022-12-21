@@ -228,7 +228,7 @@ function TaskModal({
         </div>
         <div className={styles.body}>
           <div onClick={clickEditableHandler} className="editable">
-            Task number:
+            <span className={styles.label}>Task number:</span>
             {isEditMode ? (
               <TextEditor
                 initialValue={number}
@@ -236,11 +236,14 @@ function TaskModal({
                 toolbar=""
               />
             ) : (
-              <span dangerouslySetInnerHTML={{ __html: number }} />
+              <span
+                className={styles.data}
+                dangerouslySetInnerHTML={{ __html: number }}
+              />
             )}
           </div>
           <div className={styles.dropdownContainer}>
-            <span>Task status:</span>
+            <span className={styles.label}>Task status:</span>
             <Dropdown
               values={Object.values(Status)}
               initialValue={status}
@@ -248,7 +251,7 @@ function TaskModal({
             />
           </div>
           <div className={styles.dropdownContainer}>
-            <span>Task priority:</span>
+            <span className={styles.label}>Task priority:</span>
             <Dropdown
               values={Object.values(Priority)}
               initialValue={priority}
@@ -256,13 +259,13 @@ function TaskModal({
             />
           </div>
           <div className={styles.dropdownContainer}>
-            <span>Created on:</span>
-            <span>{createdOn}</span>
+            <span className={styles.label}>Created on:</span>
+            <span className={styles.data}>{createdOn}</span>
           </div>
           {completedOn !== "" && (
             <div className={styles.dropdownContainer}>
-              <span>Completed on:</span>
-              <span>{completedOn}</span>
+              <span className={styles.label}>Completed on:</span>
+              <span className={styles.data}>{completedOn}</span>
             </div>
           )}
           <div
@@ -270,7 +273,7 @@ function TaskModal({
             onClick={clickEditableHandler}
           >
             <>
-              Task description:
+              <span className={styles.label}>Task description:</span>
               {isEditMode ? (
                 <TextEditor
                   initialValue={description}
@@ -283,7 +286,7 @@ function TaskModal({
             </>
           </div>
           <div className={styles.subtasks}>
-            Subtasks:{" "}
+            <span className={styles.label}>Subtasks:</span>
             {subtasks.length === 0 ? (
               "No subtasks"
             ) : (
@@ -295,7 +298,13 @@ function TaskModal({
             ></Button>
           </div>
           <div className={styles.comments}>
-            Comments: <div>{renderComments(comments)}</div>
+            <span className={styles.label}>Comments:</span>
+            {comments.length === 0 ? (
+              "No comments"
+            ) : (
+              <div>{renderComments(comments)}</div>
+            )}
+
             <Button
               onClickHandler={addCommentHandler}
               label="Add comment"
