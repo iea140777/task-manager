@@ -8,6 +8,7 @@
   gap: 10px;
   padding: 10px;
   padding-left: 20px;
+  position: relative;
 }
 
 .itemContainer {
@@ -20,3 +21,8 @@
   font-style: italic;
 }
 
+.deleteButton {
+  position: absolute;
+  right: $padding;
+  bottom: $padding;
+}

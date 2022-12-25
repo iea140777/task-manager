@@ -154,11 +154,25 @@ function TaskModal({
     });
   };
 
+  const deleteSubtaskHandler = (subtask: SubTask) => {
+    setTask((state) => {
+      const updatedSubtasks = state.subtasks.filter(
+        (item) => item.id !== subtask.id
+      );
+
+      return {
+        ...state,
+        subtasks: updatedSubtasks,
+      };
+    });
+  };
+
   const renderSubtasks = (): ReactNode =>
     subtasks.map((subtask) => (
       <Subtask
         key={subtask.id}
         subtask={subtask}
+        deleteHandler={deleteSubtaskHandler}
         onChangeValue={updateSubtaskHandler}
       />
     ));
@@ -262,7 +276,7 @@ function TaskModal({
             <span className={styles.label}>Created on:</span>
             <span className={styles.data}>{createdOn}</span>
           </div>
-          {completedOn !== "" && (
+          {status === Status.DONE && (
             <div className={styles.dropdownContainer}>
               <span className={styles.label}>Completed on:</span>
               <span className={styles.data}>{completedOn}</span>

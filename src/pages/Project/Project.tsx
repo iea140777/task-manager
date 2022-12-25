@@ -53,7 +53,6 @@ function Project(): React.ReactElement | null {
     dragOverItem.current = status;
   };
   const allowDrop = (e: React.DragEvent): void => {
-    e.stopPropagation();
     e.preventDefault();
   };
   const drop = (e: React.DragEvent): void => {
