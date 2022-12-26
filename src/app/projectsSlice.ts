@@ -13,6 +13,9 @@ const getUpdatedProjectIndex = (id: Id, state: ProjectsState): number => {
   return state.findIndex((project) => project.id === id);
 };
 
+const updateLocalStorage = (state: ProjectsState): void =>
+  localStorage.setItem("projects", JSON.stringify(state));
+
 const initialState: ProjectsState = [] as ProjectsState;
 
 const projectsSlice = createSlice({
@@ -35,6 +38,7 @@ const projectsSlice = createSlice({
         const updatedProjectIndex = getUpdatedProjectIndex(projectId, state);
         state[updatedProjectIndex] = action.payload;
       }
+      updateLocalStorage(state);
     },
     updateTask: (state, action: PayloadAction<UpdateProjectProps>) => {
       const { projectId, task } = action.payload;
@@ -52,6 +56,7 @@ const projectsSlice = createSlice({
         );
         state[updatedProjectIndex].tasks[updatedTaskIndex] = task;
       }
+      updateLocalStorage(state);
     },
     deleteTask: (state, action: PayloadAction<UpdateProjectProps>) => {
       const { projectId, task } = action.payload;
@@ -61,6 +66,7 @@ const projectsSlice = createSlice({
         (item) => item.id === task.id
       );
       state[updatedProjectIndex].tasks.splice(deletedTaskIndex, 1);
+      updateLocalStorage(state);
     },
   },
 });

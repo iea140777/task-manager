@@ -14,12 +14,12 @@ function App(): React.ReactElement {
   const dispatch = useAppDispatch();
   useEffect(() => {
     if (projectsList.length === 0) {
-      // TODO: refactor code below to make it more readable
-      const cookieData = document.cookie.split(";").map((v) => v.split("="))[0];
-      if (cookieData.length === 0 || cookieData[0] === "") {
+      const data = localStorage.getItem("projects");
+
+      if (data == null || data.length === 0) {
         return;
       }
-      const restoredProjectsData = JSON.parse(cookieData[1]) as Project[];
+      const restoredProjectsData = JSON.parse(data) as Project[];
       if (restoredProjectsData.length > 0) {
         dispatch(setProjects(restoredProjectsData));
       }
@@ -27,11 +27,6 @@ function App(): React.ReactElement {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useEffect(() => {
-    document.cookie = `projects=${JSON.stringify(
-      projectsList
-    )};path="/","/project"`;
-  }, [projectsList]);
   return (
     <div className={styles.app}>
       <Routes>
