@@ -10,9 +10,9 @@ $height: 20px;
 .dropdown {
   position: absolute;
   top: $height + 5px;
-  left: -$padding;
+  left: -$padding-small;
   z-index: 2;
-  padding: $padding;
+  padding: $padding-small;
   display: flex;
   flex-direction: column;
   gap: 10px;

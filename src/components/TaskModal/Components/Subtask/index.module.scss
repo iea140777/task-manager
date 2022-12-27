@@ -1,4 +1,4 @@
-@import "../../index.scss";
+@import "../../../../index.scss";
 
 .container {
   border: 1px solid $color-green;
@@ -6,8 +6,8 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
-  padding: 10px;
-  padding-left: 20px;
+  padding: $padding-small;
+  padding-left: $padding-large;
   position: relative;
 }
 
@@ -23,6 +23,6 @@
 
 .deleteButton {
   position: absolute;
-  right: $padding;
-  bottom: $padding;
+  right: $padding-small;
+  bottom: $padding-small;
 }

@@ -1,6 +1,8 @@
 import React, { ReactNode, useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 
+import { format } from "date-fns";
+
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { deleteTask, updateTask } from "../../app/projectsSlice";
 import { TaskCard } from "../../components/TaskCard/TaskCard";
@@ -34,9 +36,34 @@ function Project(): React.ReactElement | null {
     }
   }, [currentTask, setTaskModalOpen]);
 
+  useEffect(() => {
+    if (project !== undefined) {
+      const projectId = project.id;
+      project.tasks.forEach((task) => {
+        const { status, completedOn } = task;
+        if (status === Status.DONE && completedOn === "") {
+          const updatedTask = {
+            ...task,
+            completedOn: format(new Date(), "MM/dd/yyyy"),
+          };
+          dispatch(updateTask({ projectId, task: updatedTask }));
+        } else if (status !== Status.DONE && completedOn !== "") {
+          const updatedTask = {
+            ...task,
+            completedOn: "",
+          };
+          dispatch(updateTask({ projectId, task: updatedTask }));
+        }
+      });
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [project]);
+
   if (project === undefined) {
     return null;
   }
+
   const { id: projectId, title, description, tasks } = project;
 
   // Drag and Drop functionality
@@ -122,33 +149,37 @@ function Project(): React.ReactElement | null {
           <div dangerouslySetInnerHTML={{ __html: description }}></div>
           <Button onClickHandler={addTaskHandler} label="Add new task"></Button>
         </div>
-        <div className={styles.tasksContainer}>
-          <div
-            className={styles.tasksColumn}
-            onDragEnter={(e) => dragEnter(e, Status.QUEUE)}
-            onDragOver={allowDrop}
-            onDrop={drop}
-          >
-            <h3>{Status.QUEUE}</h3>
-            {renderTasksOfStatus(Status.QUEUE)}
+        <div className={styles.tasks}>
+          <div className={styles.tasksHeaderContainer}>
+            <h3 className={styles.tasksHeaderColumn}>{Status.QUEUE}</h3>
+            <h3 className={styles.tasksHeaderColumn}>{Status.DEVELOPMENT}</h3>
+            <h3 className={styles.tasksHeaderColumn}>{Status.DONE}</h3>
           </div>
-          <div
-            className={styles.tasksColumn}
-            onDragEnter={(e) => dragEnter(e, Status.DEVELOPMENT)}
-            onDragOver={allowDrop}
-            onDrop={drop}
-          >
-            <h3>{Status.DEVELOPMENT}</h3>
-            {renderTasksOfStatus(Status.DEVELOPMENT)}
-          </div>
-          <div
-            className={styles.tasksColumn}
-            onDragEnter={(e) => dragEnter(e, Status.DONE)}
-            onDragOver={allowDrop}
-            onDrop={drop}
-          >
-            <h3>{Status.DONE}</h3>
-            {renderTasksOfStatus(Status.DONE)}
+          <div className={styles.tasksContainer}>
+            <div
+              className={styles.tasksColumn}
+              onDragEnter={(e) => dragEnter(e, Status.QUEUE)}
+              onDragOver={allowDrop}
+              onDrop={drop}
+            >
+              {renderTasksOfStatus(Status.QUEUE)}
+            </div>
+            <div
+              className={styles.tasksColumn}
+              onDragEnter={(e) => dragEnter(e, Status.DEVELOPMENT)}
+              onDragOver={allowDrop}
+              onDrop={drop}
+            >
+              {renderTasksOfStatus(Status.DEVELOPMENT)}
+            </div>
+            <div
+              className={styles.tasksColumn}
+              onDragEnter={(e) => dragEnter(e, Status.DONE)}
+              onDragOver={allowDrop}
+              onDrop={drop}
+            >
+              {renderTasksOfStatus(Status.DONE)}
+            </div>
           </div>
         </div>
       </div>

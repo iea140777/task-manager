@@ -1,5 +1,6 @@
 import React from "react";
 
+import { Status } from "../../types/constants";
 import { Task } from "../../types/projectTypes";
 
 import styles from "./index.module.scss";
@@ -60,8 +61,12 @@ function TaskCard({ task, onCardClick }: TaskCardProps): React.ReactElement {
         )}
       </div>
       <div className={styles.footer}>
-        <span>{subtasks.length} subtasks</span>
-        <span>{comments.length} comments</span>
+        <span>
+          {subtasks.length} subtask{subtasks.length !== 1 && "s"}
+        </span>
+        <span>
+          {comments.length} comment{comments.length !== 1 && "s"}
+        </span>
       </div>
     </div>
   );

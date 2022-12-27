@@ -14,7 +14,7 @@
   justify-content: space-between;
   gap: 5px;
   border-bottom: 1px solid rgb($color-green, 0.6);
-  padding: 10px;
+  padding: $padding-small;
 }
 
 .number {
@@ -32,7 +32,7 @@
 .body {
   display: flex;
   flex-direction: column;
-  padding: 10px;
+  padding: $padding-small;
 }
 
 .bodyItem {
@@ -52,5 +52,5 @@ font-style: italic;
 .footer {
   display: flex;
   justify-content: space-between;
-  padding: 10px;
+  padding: $padding-small;
 }

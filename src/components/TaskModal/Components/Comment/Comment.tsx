@@ -2,10 +2,10 @@ import React, { ReactNode, useEffect, useRef, useState } from "react";
 
 import { format } from "date-fns";
 
-import { EMPTY_COMMENT } from "../../types/constants";
-import { CommentType } from "../../types/projectTypes";
-import { Button } from "../../ui/Button/Button";
-import { TextEditor } from "../TextEditor/TextEditor";
+import { EMPTY_COMMENT } from "../../../../types/constants";
+import { CommentType } from "../../../../types/projectTypes";
+import { Button } from "../../../../ui/Button/Button";
+import { TextEditor } from "../../../TextEditor/TextEditor";
 
 import styles from "./index.module.scss";
 
@@ -28,7 +28,7 @@ function Comment({
     }
   }, [comment]);
 
-  const { createdOn, text, replies } = comment;
+  const { createdOn, text } = comment;
   const textRef = useRef<any>(null);
   const replyRef = useRef<any>(null);
 

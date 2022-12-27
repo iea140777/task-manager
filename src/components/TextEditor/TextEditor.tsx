@@ -33,10 +33,7 @@ const DEFAULT_PLUGINS = [
 ];
 
 const DEFAULT_TOOLBAR =
-  "undo redo | blocks | " +
-  "bold italic forecolor | alignleft aligncenter " +
-  "alignright alignjustify | bullist numlist outdent indent | " +
-  "removeformat ";
+  "undo redo | bold italic forecolor |  alignleft aligncenter | bullist numlist outdent inden | removeformat";
 
 function TextEditor({
   initialValue,

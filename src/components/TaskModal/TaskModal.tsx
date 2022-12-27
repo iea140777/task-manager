@@ -11,10 +11,10 @@ import {
 } from "../../types/constants";
 import { CommentType, SubTask, Task } from "../../types/projectTypes";
 import { Button } from "../../ui/Button/Button";
-import { Comment } from "../Comment/Comment";
-import { Dropdown } from "../Dropdown/Dropdown";
-import { Subtask } from "../Subtask/Subtask";
+import { Dropdown } from "../../ui/Dropdown/Dropdown";
 import { TextEditor } from "../TextEditor/TextEditor";
+import { Comment } from "./Components/Comment/Comment";
+import { Subtask } from "./Components/Subtask/Subtask";
 
 import styles from "./index.module.scss";
 
@@ -29,7 +29,6 @@ interface TaskCardProps {
 
 function TaskModal({
   currentTask,
-
   handleClosemodal,
   updateTask,
   deleteTaskHandler,
@@ -42,6 +41,7 @@ function TaskModal({
   const numberRef = useRef<any>(null);
 
   const {
+    id,
     title,
     number,
     status,
@@ -60,20 +60,24 @@ function TaskModal({
         completedOn: format(new Date(), "MM/dd/yyyy"),
       };
       setTask(updatedTask);
-      updateTask(updatedTask);
+      if (id !== 0) {
+        updateTask(updatedTask);
+      }
     } else if (status !== Status.DONE && completedOn !== "") {
       const updatedTask = {
         ...task,
         completedOn: "",
       };
       setTask(updatedTask);
-      updateTask(updatedTask);
+      if (id !== 0) {
+        updateTask(updatedTask);
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status, completedOn, task]);
 
   const closeButtonHandler = (): void => {
-    if (task.id !== 0) {
+    if (id !== 0) {
       updateTask(task);
     }
     setIsEditMode(false);
@@ -95,7 +99,9 @@ function TaskModal({
       status: newStatus as Status,
     };
     setTask(updatedTask);
-    updateTask(updatedTask);
+    if (id !== 0) {
+      updateTask(updatedTask);
+    }
   };
 
   const changePriorityHandler = (newPriority: string): void => {
@@ -104,7 +110,9 @@ function TaskModal({
       priority: newPriority as Priority,
     };
     setTask(updatedTask);
-    updateTask(updatedTask);
+    if (id !== 0) {
+      updateTask(updatedTask);
+    }
   };
 
   const saveChangesHandler = (): void => {
@@ -154,7 +162,7 @@ function TaskModal({
     });
   };
 
-  const deleteSubtaskHandler = (subtask: SubTask) => {
+  const deleteSubtaskHandler = (subtask: SubTask): void => {
     setTask((state) => {
       const updatedSubtasks = state.subtasks.filter(
         (item) => item.id !== subtask.id
@@ -241,7 +249,10 @@ function TaskModal({
           />
         </div>
         <div className={styles.body}>
-          <div onClick={clickEditableHandler} className="editable">
+          <div
+            onClick={clickEditableHandler}
+            className={classNames(styles.number, "editable")}
+          >
             <span className={styles.label}>Task number:</span>
             {isEditMode ? (
               <TextEditor
@@ -292,7 +303,6 @@ function TaskModal({
                 <TextEditor
                   initialValue={description}
                   editorRef={descriptionRef}
-                  toolbar="undo redo | bold italic forecolor |  alignleft aligncenter | bullist numlist outdent inden | removeformat"
                 />
               ) : (
                 <span dangerouslySetInnerHTML={{ __html: description }} />

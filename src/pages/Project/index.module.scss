@@ -3,26 +3,46 @@
 .container {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  min-height: 100vh;
 }
 
 .header {
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 10px;
+  padding: $padding-medium;
 }
 
-.tasksContainer {
+.tasks {
+  flex-grow: 3;
+  display: flex;
+  flex-direction: column;
+}
+
+.tasksContainer, .tasksHeaderContainer {
   width: 100%;
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
 }
 
-.tasksColumn {
+.tasksContainer {
+  flex-grow: 2;
+}
+
+.tasksHeaderContainer {
+  position: sticky;
+  top: 0;
+  background: linear-gradient(90deg,#efffcc,#f8ffeb);
+  z-index: 1;
+  color: $color-green
+}
+
+.tasksColumn, .tasksHeaderColumn {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 15px;
+  padding: $padding-medium;
   position: relative;
   border-right: 2px solid rgb($color-green, 0.6);
   gap: 15px;
@@ -38,5 +58,5 @@
   flex-direction: column;
   justify-content: space-between;
   gap: 10px;
-  padding: 10px;
+  padding: $padding-small;
 }

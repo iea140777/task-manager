@@ -1,5 +1,6 @@
+@import "../../index.scss";
 .container {
-  padding: 20px;
+  padding: $padding-large;
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -11,5 +12,4 @@
 
 .subHeader {
   @extend .header;
-  
 }

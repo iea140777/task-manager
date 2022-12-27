@@ -2,11 +2,11 @@ import React, { useEffect, useRef, useState } from "react";
 
 import { format } from "date-fns";
 
-import { Status } from "../../types/constants";
-import { SubTask } from "../../types/projectTypes";
-import { Button } from "../../ui/Button/Button";
-import { Dropdown } from "../Dropdown/Dropdown";
-import { TextEditor } from "../TextEditor/TextEditor";
+import { Status } from "../../../../types/constants";
+import { SubTask } from "../../../../types/projectTypes";
+import { Button } from "../../../../ui/Button/Button";
+import { Dropdown } from "../../../../ui/Dropdown/Dropdown";
+import { TextEditor } from "../../../TextEditor/TextEditor";
 
 import styles from "./index.module.scss";
 
@@ -21,7 +21,8 @@ function Subtask({
   deleteHandler,
   onChangeValue,
 }: SubtaskCardProps): React.ReactElement {
-  const { title, status, createdOn, completedOn, id } = subtask;
+  const [currentSubtask, setCurrentSubtask] = useState(subtask);
+  const { title, status, createdOn, completedOn, id } = currentSubtask;
   const [isEditMode, setIsEditMode] = useState(false);
   const titleRef = useRef<any>(null);
 
@@ -33,22 +34,21 @@ function Subtask({
 
   useEffect(() => {
     if (status === Status.DONE && completedOn === "") {
-      onChangeValue({
-        ...subtask,
+      setCurrentSubtask((prevState) => ({
+        ...prevState,
         completedOn: format(new Date(), "MM/dd/yyyy"),
-      });
+      }));
     } else if (status !== Status.DONE && completedOn !== "") {
-      onChangeValue({
-        ...subtask,
+      setCurrentSubtask((prevState) => ({
+        ...prevState,
         completedOn: "",
-      });
+      }));
     }
-  });
+  }, [status, completedOn]);
 
   const saveSubtaskHandler = (): void => {
     const editedSubtask = {
-      ...subtask,
-      // number: numberRef.current.getContent(),
+      ...currentSubtask,
       title: titleRef.current.getContent(),
     };
     onChangeValue(editedSubtask);
@@ -72,7 +72,10 @@ function Subtask({
           initialValue={status}
           values={Object.values(Status)}
           onChangeValue={(newStatus: string) =>
-            onChangeValue({ ...subtask, status: newStatus as Status })
+            setCurrentSubtask((prevState) => ({
+              ...prevState,
+              status: newStatus as Status,
+            }))
           }
         />
       </div>

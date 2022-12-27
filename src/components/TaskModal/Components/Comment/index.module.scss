@@ -1,7 +1,7 @@
-@import "../../index.scss";
+@import "../../../../index.scss";
 
 .container {
-  padding: 10px;
+  padding: $padding-small;
   margin-left: 15px;
   display: flex;
   flex-direction: column;

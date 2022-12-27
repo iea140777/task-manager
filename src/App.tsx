@@ -7,8 +7,6 @@ import { Project as ProjectComponent } from "./pages/Project/Project";
 import { Projects } from "./pages/Projects/Projects";
 import { Project } from "./types/projectTypes";
 
-import styles from "./App.module.scss";
-
 function App(): React.ReactElement {
   const projectsList = useAppSelector((state) => state.projects);
   const dispatch = useAppDispatch();
@@ -28,7 +26,7 @@ function App(): React.ReactElement {
   }, []);
 
   return (
-    <div className={styles.app}>
+    <div>
       <Routes>
         <Route path="/" element={<Projects />} />
         <Route path="/project/:id" element={<ProjectComponent />} />
