@@ -2,8 +2,9 @@ import React, { ReactNode, useEffect, useRef, useState } from "react";
 
 import { format } from "date-fns";
 
+import { idGenerator } from "../../../../app/idGenerator";
 import { EMPTY_COMMENT } from "../../../../types/constants";
-import { CommentType } from "../../../../types/projectTypes";
+import { CommentType, Id } from "../../../../types/projectTypes";
 import { Button } from "../../../../ui/Button/Button";
 import { TextEditor } from "../../../TextEditor/TextEditor";
 
@@ -12,12 +13,14 @@ import styles from "./index.module.scss";
 interface CommentProps {
   comment: CommentType;
   saveCommentHandler: (comment: CommentType) => void;
+  deleteCommentHandler: (id: Id) => void;
   children?: ReactNode;
 }
 
 function Comment({
   comment,
   saveCommentHandler,
+  deleteCommentHandler,
   children = null,
 }: CommentProps): React.ReactElement {
   const [isCommentEditMode, setIsCommentEditMode] = useState<boolean>(false);
@@ -28,7 +31,7 @@ function Comment({
     }
   }, [comment]);
 
-  const { createdOn, text } = comment;
+  const { createdOn, text, id } = comment;
   const textRef = useRef<any>(null);
   const replyRef = useRef<any>(null);
 
@@ -37,7 +40,7 @@ function Comment({
   };
 
   const saveReplyButtonHandler = (): void => {
-    const replyId = comment.replies.length + 1;
+    const replyId = idGenerator(comment.replies);
     const editedComment = {
       ...EMPTY_COMMENT,
       id: replyId,
@@ -88,7 +91,13 @@ function Comment({
         </div>
       )}
       {!isReplyEditMode && !isCommentEditMode && (
-        <Button onClickHandler={replyButtonHandler} label="Reply"></Button>
+        <div className={styles.buttonContainer}>
+          <Button onClickHandler={replyButtonHandler} label="Reply"></Button>
+          <Button
+            onClickHandler={() => deleteCommentHandler(id)}
+            label="Delete"
+          ></Button>
+        </div>
       )}
       {children}
     </div>

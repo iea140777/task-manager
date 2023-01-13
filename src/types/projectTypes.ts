@@ -2,7 +2,7 @@ import { Priority, Status } from "./constants";
 
 type Id = number;
 interface CommentType {
-  id: number;
+  id: Id;
   createdOn: string;
   text: string;
   replies: CommentType[];

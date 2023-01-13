@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import { Id, Project, Task } from "../types/projectTypes";
+import { idGenerator } from "./idGenerator";
 
 type ProjectsState = Project[];
 
@@ -28,10 +29,10 @@ const projectsSlice = createSlice({
     updateProjects: (state, action: PayloadAction<Project>) => {
       const projectId = action.payload.id;
       if (projectId === 0) {
-        const projectsLength: number = state.length;
+        const newProjectId = idGenerator(state);
         const newProject = {
           ...action.payload,
-          id: 1 + projectsLength,
+          id: newProjectId,
         };
         state.push(newProject);
       } else {
@@ -44,10 +45,10 @@ const projectsSlice = createSlice({
       const { projectId, task } = action.payload;
       const updatedProjectIndex = getUpdatedProjectIndex(projectId, state);
       if (task.id === 0) {
-        const tasksLength: number = state[updatedProjectIndex].tasks.length;
+        const newTaskId = idGenerator(state[updatedProjectIndex].tasks);
         const newTask = {
           ...task,
-          id: tasksLength + 1,
+          id: newTaskId,
         };
         state[updatedProjectIndex].tasks.push(newTask);
       } else {

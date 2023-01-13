@@ -3,13 +3,14 @@ import React, { ReactNode, useEffect, useRef, useState } from "react";
 import classNames from "classnames";
 import { format } from "date-fns";
 
+import { idGenerator } from "../../app/idGenerator";
 import {
   EMPTY_COMMENT,
   EMPTY_SUBTASK,
   Priority,
   Status,
 } from "../../types/constants";
-import { CommentType, SubTask, Task } from "../../types/projectTypes";
+import { CommentType, Id, SubTask, Task } from "../../types/projectTypes";
 import { Button } from "../../ui/Button/Button";
 import { Dropdown } from "../../ui/Dropdown/Dropdown";
 import { TextEditor } from "../TextEditor/TextEditor";
@@ -144,7 +145,7 @@ function TaskModal({
   const updateSubtaskHandler = (subtask: SubTask): void => {
     let editedSubtask = subtask;
     if (editedSubtask.id === 0) {
-      const subtaskId = task.subtasks.length + 1;
+      const subtaskId = idGenerator(task.subtasks);
       editedSubtask = {
         ...editedSubtask,
         id: subtaskId,
@@ -189,11 +190,11 @@ function TaskModal({
     let editedComment = comment;
 
     if (comment.id === 0) {
-      const commentsLength = task.comments.length;
+      const commentId = idGenerator(task.comments);
       editedComment = {
         ...comment,
         createdOn: format(new Date(), "MM/dd/yyyy HH.mm"),
-        id: commentsLength + 1,
+        id: commentId,
       };
     }
     const commentIndex = task.comments.findIndex(
@@ -207,6 +208,16 @@ function TaskModal({
       comments: updatedComments,
     }));
     setIsEditMode(true);
+  };
+
+  const deleteCommentHandler = (commentId: Id): void => {
+    const updatedComments: CommentType[] = task.comments.filter(
+      (item) => item.id !== commentId
+    );
+    setTask((prevState) => ({
+      ...prevState,
+      comments: updatedComments,
+    }));
   };
 
   const addCommentHandler = (): void => {
@@ -223,6 +234,7 @@ function TaskModal({
         key={comment.id}
         children={renderComments(comment.replies)}
         saveCommentHandler={saveCommentHandler}
+        deleteCommentHandler={deleteCommentHandler}
       />
     ));
   };
