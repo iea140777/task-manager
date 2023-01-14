@@ -6,11 +6,22 @@ $color-white: #fff;
 $color-orange: #FCB500;
 $color-grey: #ADADAD;
 $color-green: #08a652;
+$color-red: #ff0000;
+$color-lightgray: #d0e5c2;
+$background-gradient: linear-gradient(90deg,#efffcc,#f8ffeb);
+
+// PRIORITY-COLORS
+$high-priority: $color-red;
+$medium-priority: $color-orange;
+$low-priority: $color-green;
 
 // PADDING
 $padding-small: 10px;
 $padding-medium: 15px;
 $padding-large: 20px;
+
+// BOX-SHADOW
+$shadow: 0 3px 5px 0 rgba($color-green, 0.8);
 
 //  common styles
 
@@ -19,8 +30,8 @@ $padding-large: 20px;
     font-family: "Montserrat", sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    background: linear-gradient(90deg,#efffcc,#f8ffeb);
     color: $color-black;
+    background-color: $color-lightgray;
   }
 
 h1, h2, h3, p {

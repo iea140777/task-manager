@@ -111,10 +111,6 @@ function TaskColumn({
       <div className={styles.tasksHeaderContainer}>
         <h3>{status}</h3>
         <div className={styles.sortingCriteria}>
-          <Button
-            label={sortingOrder}
-            onClickHandler={sortingOrderClickHandler}
-          />
           <Dropdown
             values={Object.values(SortingValue)}
             initialValue={sortingValue}
@@ -122,6 +118,13 @@ function TaskColumn({
               setSortingValue(newValue as SortingValue)
             }
           />
+          <div
+            role="button"
+            className={styles.orderArrow}
+            onClick={sortingOrderClickHandler}
+          >
+            {sortingOrder}
+          </div>
         </div>
       </div>
 

@@ -145,7 +145,11 @@ function Project(): React.ReactElement | null {
         <div className={styles.header}>
           <h2 dangerouslySetInnerHTML={{ __html: title }}></h2>
           <div dangerouslySetInnerHTML={{ __html: description }}></div>
-          <Button onClickHandler={addTaskHandler} label="Add new task"></Button>
+          <Button
+            onClickHandler={addTaskHandler}
+            label="Add new task"
+            className={styles.addButton}
+          ></Button>
         </div>
         <div className={styles.tasks}>
           {renderTaskColumn(Status.QUEUE)}
