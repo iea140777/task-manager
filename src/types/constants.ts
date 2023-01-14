@@ -14,6 +14,16 @@ enum Priority {
   LOW = "Low",
 }
 
+enum SortingOrder {
+  DESC = "\u{1F817}",
+  ASC = "\u{1F815}",
+}
+
+enum SortingValue {
+  PRIORITY = "Priority",
+  CREATED_ON = "Created on",
+}
+
 const EMPTY_SUBTASK: SubTask = {
   id: 0,
   title: "New Subtask",
@@ -57,4 +67,6 @@ export {
   EMPTY_TASK,
   EMPTY_SUBTASK,
   EMPTY_COMMENT,
+  SortingOrder,
+  SortingValue,
 };

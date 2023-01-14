@@ -5,6 +5,7 @@ $height: 20px;
 .value {
   height: $height;
   position: relative;
+  white-space: nowrap;
 }
 
 .dropdown {

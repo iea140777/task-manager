@@ -15,48 +15,7 @@
 }
 
 .tasks {
-  flex-grow: 3;
-  display: flex;
-  flex-direction: column;
-}
-
-.tasksContainer, .tasksHeaderContainer {
   width: 100%;
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
-}
-
-.tasksContainer {
-  flex-grow: 2;
-}
-
-.tasksHeaderContainer {
-  position: sticky;
-  top: 0;
-  background: linear-gradient(90deg,#efffcc,#f8ffeb);
-  z-index: 1;
-  color: $color-green
-}
-
-.tasksColumn, .tasksHeaderColumn {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: $padding-medium;
-  position: relative;
-  border-right: 2px solid rgb($color-green, 0.6);
-  gap: 15px;
-}
-
-.cardContainer {
-  width: 100%;
-  height: 240px;
-  border: 1px solid $color-green;
-  border-radius: 10px;
-  cursor: pointer;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  gap: 10px;
-  padding: $padding-small;
 }

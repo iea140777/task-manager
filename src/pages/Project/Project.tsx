@@ -5,7 +5,7 @@ import { format } from "date-fns";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { deleteTask, updateTask } from "../../app/projectsSlice";
-import { TaskCard } from "../../components/TaskCard/TaskCard";
+import { TaskColumn } from "../../components/TaskColumn/TaskColumn";
 import { TaskModal } from "../../components/TaskModal/TaskModal";
 import { EMPTY_TASK, Status } from "../../types/constants";
 import { Task } from "../../types/projectTypes";
@@ -124,21 +124,19 @@ function Project(): React.ReactElement | null {
     setCurrentTask(undefined);
   };
 
-  const renderTasksOfStatus = (status: Status): ReactNode => {
+  const renderTaskColumn = (status: Status): ReactNode => {
     const tasksOfStatus = tasks.filter((task) => task.status === status);
-    if (tasksOfStatus.length === 0) {
-      return null;
-    }
-    return tasksOfStatus.map((task) => (
-      <div
-        draggable
-        onDragStart={(e) => dragStart(e, task.id)}
-        key={task.id}
-        className={styles.cardContainer}
-      >
-        <TaskCard task={task} onCardClick={onCardClick} />
-      </div>
-    ));
+    return (
+      <TaskColumn
+        status={status}
+        tasks={tasksOfStatus}
+        drop={drop}
+        onCardClick={onCardClick}
+        dragEnter={dragEnter}
+        allowDrop={allowDrop}
+        dragStart={dragStart}
+      />
+    );
   };
 
   return (
@@ -150,37 +148,9 @@ function Project(): React.ReactElement | null {
           <Button onClickHandler={addTaskHandler} label="Add new task"></Button>
         </div>
         <div className={styles.tasks}>
-          <div className={styles.tasksHeaderContainer}>
-            <h3 className={styles.tasksHeaderColumn}>{Status.QUEUE}</h3>
-            <h3 className={styles.tasksHeaderColumn}>{Status.DEVELOPMENT}</h3>
-            <h3 className={styles.tasksHeaderColumn}>{Status.DONE}</h3>
-          </div>
-          <div className={styles.tasksContainer}>
-            <div
-              className={styles.tasksColumn}
-              onDragEnter={(e) => dragEnter(e, Status.QUEUE)}
-              onDragOver={allowDrop}
-              onDrop={drop}
-            >
-              {renderTasksOfStatus(Status.QUEUE)}
-            </div>
-            <div
-              className={styles.tasksColumn}
-              onDragEnter={(e) => dragEnter(e, Status.DEVELOPMENT)}
-              onDragOver={allowDrop}
-              onDrop={drop}
-            >
-              {renderTasksOfStatus(Status.DEVELOPMENT)}
-            </div>
-            <div
-              className={styles.tasksColumn}
-              onDragEnter={(e) => dragEnter(e, Status.DONE)}
-              onDragOver={allowDrop}
-              onDrop={drop}
-            >
-              {renderTasksOfStatus(Status.DONE)}
-            </div>
-          </div>
+          {renderTaskColumn(Status.QUEUE)}
+          {renderTaskColumn(Status.DEVELOPMENT)}
+          {renderTaskColumn(Status.DONE)}
         </div>
       </div>
       {currentTask !== undefined && (

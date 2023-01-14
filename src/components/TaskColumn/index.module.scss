@@ -1,0 +1,46 @@
+@import "../../index.scss";
+
+.columnContainer {
+  display: flex;
+  flex-direction: column;
+  border-right: 2px solid rgb($color-green, 0.6);
+  position: relative;
+}
+
+.tasksColumn, .tasksHeaderContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: $padding-medium;
+  gap: $padding-small;
+}
+
+.tasksHeaderContainer {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  color: $color-green
+}
+
+.sortingCriteria {
+  display: flex;
+  gap: $padding-small;
+  align-items: baseline;
+}
+
+.tasksColumn {
+  flex-grow: 2;
+}
+
+.cardContainer {
+  width: 100%;
+  height: 240px;
+  border: 1px solid $color-green;
+  border-radius: 10px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 10px;
+  padding: $padding-small;
+}
